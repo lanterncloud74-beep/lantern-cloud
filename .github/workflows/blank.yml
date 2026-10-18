@@ -1,0 +1,33 @@
+name: Lantern Cloud Trial 
+
+on:
+  workflow_dispatch: # Allows you to start it manually
+
+jobs:
+  run-panel:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install PufferPanel
+      run: |
+        curl -s https://packagecloud.io | sudo bash
+        sudo apt-get install pufferpanel -y
+        
+    - name: Create Admin User
+      run: |
+        # Creates a default admin: admin@test.com / Password123
+        sudo pufferpanel user add --name admin --email shivayshrawagi@gmail.com --password shivay@1234 --admin true
+
+    - name: Start PufferPanel
+      run: |
+        export PUFFER_WEB_HOST="0.0.0.0:8080"
+        sudo systemctl start pufferpanel
+
+    - name: Launch Pinggy Tunnels
+      run: |
+        echo "=== WEBPAGE URL WILL APPEAR BELOW IN A MOMENT ==="
+        # Spins up an ultra-fast high-performance SSH tunnel on port 8080
+        ssh -p 443 -R 0:localhost:8080 -o StrictHostKeyChecking=no a.pinggy.io
+
+
+
+
